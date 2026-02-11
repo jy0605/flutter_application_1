@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>주변 맛집 검색을 위해 현재 위치를 사용합니다.</string>
 </dict>
 </plist>

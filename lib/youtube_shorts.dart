@@ -1,10 +1,9 @@
-// lib/youtube_shorts.dart
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class YoutubeShortsPage extends StatefulWidget {
-  final String menu; // 메인 화면에서 전달받은 메뉴 이름
+  final String menu;
 
   const YoutubeShortsPage({super.key, required this.menu});
 
@@ -14,26 +13,30 @@ class YoutubeShortsPage extends StatefulWidget {
 
 class _YoutubeShortsPageState extends State<YoutubeShortsPage> {
   late final WebViewController _controller;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
-    // 1. 웹뷰 컨트롤러 설정
     _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted) // 자바스크립트 허용 (유튜브 필수)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
+          onPageStarted: (_) {
+            if (!mounted) return;
+            setState(() => _isLoading = true);
+          },
+          onPageFinished: (_) {
+            if (!mounted) return;
+            setState(() => _isLoading = false);
+          },
         ),
       )
-      // 2. 유튜브 검색 URL 로딩 (쇼츠 키워드 추가)
       ..loadRequest(
         Uri.parse(
-          'https://m.youtube.com/results?search_query=${Uri.encodeComponent("${widget.menu} 먹방 shorts")}',
+          'https://m.youtube.com/results?search_query=${Uri.encodeComponent("${widget.menu} 맛집 shorts")}',
         ),
       );
   }
@@ -42,12 +45,23 @@ class _YoutubeShortsPageState extends State<YoutubeShortsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.menu} 쇼츠 🎬'),
-        backgroundColor: Colors.red, // 유튜브 느낌의 빨간색
-        foregroundColor: Colors.white,
+        title: Text(
+          '${widget.menu} 쇼츠 탐색',
+          style: GoogleFonts.notoSansKr(fontWeight: FontWeight.w800),
+        ),
       ),
-      // 3. 실제 웹 화면이 표시되는 곳
-      body: WebViewWidget(controller: _controller),
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _controller),
+          if (_isLoading)
+            Container(
+              color: Colors.white.withValues(alpha: 0.85),
+              child: const Center(
+                child: CircularProgressIndicator(color: Color(0xFFFF6B35)),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
