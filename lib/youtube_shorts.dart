@@ -57,7 +57,7 @@ class _YoutubeShortsPageState extends State<YoutubeShortsPage> {
             Container(
               color: Colors.white.withValues(alpha: 0.85),
               child: const Center(
-                child: CircularProgressIndicator(color: Color(0xFFFF6B35)),
+                child: CircularProgressIndicator(color: Color(0xFFFF6347)),
               ),
             ),
         ],
